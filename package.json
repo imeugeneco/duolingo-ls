@@ -9,6 +9,7 @@
   "dependencies": {
     "@types/node": "^22.4.0",
     "axios": "^1.7.4",
+    "cowsay": "^1.6.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }

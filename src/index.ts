@@ -1,7 +1,9 @@
 import axios from 'axios';
 import fs from 'fs/promises';
 import path from 'path';
+import cowsay from 'cowsay';
 import { Dialogue, ResponseData } from './types/duolingo-response.types';
+import { getRandomAnimal } from './cowsay-helper';
 
 async function fetchDuolingoData(url: string): Promise<ResponseData | null> {
   try {
@@ -32,6 +34,25 @@ function extractPhrases(data: ResponseData): string[] {
   return phrasesWithTranslations;
 }
 
+function logPhrases(lessonNo: number, phrases: string[]): void {
+  const lessonLabel = `\nLESSON ${lessonNo}\n`;
+  const message = [
+    lessonLabel,
+    ...phrases.map((phrase, index) => `${index + 1}. ${phrase}`),
+  ].join('\n');
+
+  const animal = getRandomAnimal();
+
+  console.log(
+    cowsay.say({
+      text: message,
+      e: '^^',
+      T: 'U ',
+      f: animal,
+    })
+  );
+}
+
 async function fetchGuidebookPhrases(lessonNumber: number) {
   const guidebookUrlsPath = path.join(__dirname, '../data/guidebook-urls.json');
   const guidebookUrlsData = await fs.readFile(guidebookUrlsPath, 'utf-8');
@@ -53,11 +74,7 @@ async function fetchGuidebookPhrases(lessonNumber: number) {
 
   if (data) {
     const phrases = extractPhrases(data);
-    const allPhrases = phrases
-      .map((phrase, index) => `${index + 1}. ${phrase}`)
-      .join('\n');
-
-    console.log(allPhrases);
+    logPhrases(lessonNumber, phrases);
   }
 }
 
